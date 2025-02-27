@@ -9,15 +9,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from quick_wins.marketing_chatbot.chatbot import MarketingChatbot
 
-class NetcoreCDPIntegration:
+class MarketingCDPIntegration:
     """
-    Mock integration with Netcore CDP (Customer Data Platform)
+    Mock integration with Customer Data Platform (CDP)
     
     This class simulates how the AI Marketing Suite would integrate with
-    Netcore's existing customer data platform, enhancing it with AI capabilities.
+    an existing customer data platform, enhancing it with AI capabilities.
     """
     
-    def __init__(self, data_dir="netcore_data", chatbot=None):
+    def __init__(self, data_dir="marketing_data", chatbot=None):
         """Initialize the CDP integration"""
         self.data_dir = data_dir
         Path(data_dir).mkdir(exist_ok=True)
@@ -372,7 +372,7 @@ class NetcoreCDPIntegration:
         
         return results
     
-    def run_sample_netcore_integration(self):
+    def run_sample_integration(self):
         """Run a complete sample workflow to demonstrate integration"""
         results = []
         
@@ -408,8 +408,8 @@ class NetcoreCDPIntegration:
 
 # Example usage
 if __name__ == "__main__":
-    integration = NetcoreCDPIntegration()
-    workflow_results = integration.run_sample_netcore_integration()
+    integration = MarketingCDPIntegration()
+    workflow_results = integration.run_sample_integration()
     
     for step in workflow_results:
         print(f"\n=== {step['step']} ===")

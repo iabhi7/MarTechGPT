@@ -1,22 +1,40 @@
 # API Documentation
 
-The Netcore AI Marketing Suite provides several API endpoints for integrating the AI capabilities into your applications.
+## Overview
+
+The AI Marketing Suite API provides endpoints for AI-powered marketing automation.
 
 ## Authentication
 
-All API requests require authentication using an API key:
+All API requests require an API key:
 
-```
-Authorization: Bearer YOUR_API_KEY
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" https://api.example.com/v1/campaigns
 ```
 
 ## Base URL
 
 ```
-https://your-deployment-url.com/api/v1
+https://api.example.com/v1
 ```
 
 ## Endpoints
+
+### Campaign Generation
+
+Generate AI-optimized marketing campaigns:
+
+```bash
+POST /v1/campaigns/generate
+```
+
+### A/B Testing
+
+Create and analyze A/B test variants:
+
+```bash
+POST /v1/ab-test/generate
+```
 
 ### Subject Line Generator
 

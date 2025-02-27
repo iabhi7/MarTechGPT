@@ -62,8 +62,8 @@ class ErrorResponse(BaseModel):
 
 # Initialize FastAPI
 app = FastAPI(
-    title="Netcore AI Marketing Suite API",
-    description="API for Netcore's AI-powered marketing tools",
+    title="AI Marketing Suite API",
+    description="API for AI-powered marketing tools",
     version="1.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",

@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from quick_wins.marketing_chatbot.chatbot import MarketingChatbot
-from quick_wins.integration.mock_cdp import NetcoreCDPIntegration
+from quick_wins.integration.mock_cdp import MarketingCDPIntegration
 from quick_wins.benchmarking.performance_analyzer import PerformanceAnalyzer
 from quick_wins.ab_testing.ab_test_analyzer import ABTestAnalyzer
 
@@ -26,14 +26,13 @@ if 'initialized' not in st.session_state:
 
 # Page configuration
 st.set_page_config(
-    page_title="Netcore AI Marketing Suite Dashboard",
+    page_title="AI Marketing Suite Dashboard",
     page_icon="📊",
     layout="wide"
 )
 
 # Sidebar
-st.sidebar.image("https://res.cloudinary.com/netcore/image/upload/v1659086215/Netcore-new-logo.svg", width=200)
-st.sidebar.title("Netcore AI Marketing Suite")
+st.sidebar.title("AI Marketing Suite")
 
 # Navigation
 page = st.sidebar.selectbox(
@@ -47,7 +46,7 @@ if not st.session_state.initialized:
         try:
             # Use a small model for the dashboard demo
             st.session_state.chatbot = MarketingChatbot(model_name="distilgpt2", quantize=True)
-            st.session_state.cdp = NetcoreCDPIntegration(chatbot=st.session_state.chatbot)
+            st.session_state.cdp = MarketingCDPIntegration(chatbot=st.session_state.chatbot)
             st.session_state.analyzer = PerformanceAnalyzer()
             st.session_state.ab_tester = ABTestAnalyzer()
             st.session_state.initialized = True
@@ -57,7 +56,7 @@ if not st.session_state.initialized:
 
 # Overview page
 if page == "Overview":
-    st.title("📊 Netcore AI Marketing Suite Dashboard")
+    st.title("📊 AI Marketing Suite Dashboard")
     
     col1, col2 = st.columns(2)
     
@@ -65,7 +64,7 @@ if page == "Overview":
         st.markdown("""
         ### System Overview
         
-        The Netcore AI Marketing Suite integrates advanced AI capabilities with Netcore's 
+        The AI Marketing Suite integrates advanced AI capabilities with your 
         existing platform. Key features include:
         
         - **Quantized LLM Engine**: Optimized for speed and efficiency

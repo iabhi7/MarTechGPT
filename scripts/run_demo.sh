@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Netcore AI Marketing Suite Demo Script
+# AI Marketing Suite Demo Script
 # This script launches all components for demonstration purposes
 
 # Set environment variables
@@ -15,7 +15,7 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=======================================================${NC}"
-echo -e "${BLUE}     Netcore AI Marketing Suite - Demo Launcher        ${NC}"
+echo -e "${BLUE}     AI Marketing Suite - Demo Launcher                ${NC}"
 echo -e "${BLUE}=======================================================${NC}"
 echo
 
@@ -78,4 +78,4 @@ if [ -f "pid_Dashboard.txt" ]; then
     rm pid_Dashboard.txt
 fi
 
-echo -e "${GREEN}Demo stopped. Thank you for using Netcore AI Marketing Suite!${NC}" 
+echo -e "${GREEN}Demo stopped. Thank you for using AI Marketing Suite!${NC}" 

@@ -1,50 +1,34 @@
 # Installation Guide
 
-This guide provides detailed instructions for setting up the Netcore AI Marketing Suite on your system.
-
 ## Prerequisites
 
-- Python 3.8 or higher
-- pip (Python package installer)
-- Virtual environment tool (optional but recommended)
-- Git
+- Python 3.8+
+- pip
+- Virtual environment (recommended)
 
-## Basic Installation
+## Steps
 
-1. **Clone the repository**
-
-```
-git clone https://github.com/yourusername/netcore-ai-marketing-suite.git
-cd netcore-ai-marketing-suite
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ai-marketing-suite.git
+cd ai-marketing-suite
 ```
 
-2. **Set up a virtual environment (recommended)**
-
-```
-# Create a virtual environment
+2. Create and activate virtual environment:
+```bash
 python -m venv venv
-
-# Activate the virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. **Install dependencies**
-
-```
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-4. **Set up environment variables**
-
-```
-# Copy the example .env file
+4. Configure environment variables:
+```bash
 cp .env.example .env
-
-# Edit the .env file with your preferred text editor
-# Replace the placeholders with your actual credentials
+# Edit .env with your API credentials
 ```
 
 5. **Test the installation**
@@ -86,11 +70,11 @@ pip install torch torchvision torchaudio --extra-index-url https://download.pyto
 
 - **ImportError**: Make sure all dependencies are correctly installed
 - **CUDA errors**: Check your CUDA and PyTorch versions are compatible
-- **API authentication errors**: Verify your Netcore API key is correct
+- **API authentication errors**: Verify your API key is correct
 
 ### Getting Help
 
 If you encounter any issues that aren't covered here, please:
 
-1. Check the [GitHub Issues](https://github.com/yourusername/netcore-ai-marketing-suite/issues) to see if it's a known problem
+1. Check the [GitHub Issues](https://github.com/yourusername/ai-marketing-suite/issues) to see if it's a known problem
 2. Submit a new issue with details about your problem 

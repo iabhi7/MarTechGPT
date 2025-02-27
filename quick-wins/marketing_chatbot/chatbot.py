@@ -19,10 +19,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 class MarketingChatbot:
+    """
+    AI-powered marketing assistant chatbot.
+    Provides intelligent responses to marketing-related queries
+    and helps optimize marketing campaigns.
+    """
+    
     def __init__(self, 
                 knowledge_base_path: Optional[str] = None,
                 model_name: str = "mistralai/Mistral-7B-Instruct-v0.2",
-                netcore_api_key: Optional[str] = None,
+                api_key: Optional[str] = None,
                 quantize: bool = True):
         """
         Initialize the Marketing Chatbot.
@@ -30,11 +36,11 @@ class MarketingChatbot:
         Args:
             knowledge_base_path: Path to knowledge base files (CSV or TXT)
             model_name: HuggingFace model to use
-            netcore_api_key: API key for Netcore integration
+            api_key: API key for integration
             quantize: Whether to apply quantization to reduce model size
         """
         self.model_name = model_name
-        self.netcore_api_key = netcore_api_key
+        self.api_key = api_key
         self.knowledge_base_path = knowledge_base_path
         self.memory = ConversationBufferMemory(
             memory_key="chat_history",
@@ -129,14 +135,14 @@ class MarketingChatbot:
         else:
             # Create a simple sample knowledge base
             sample_data = """
-            Q: What is Netcore Cloud?
-            A: Netcore Cloud is a global MarTech product company that helps B2C brands create amazing digital experiences with a range of products that help in acquisition, engagement, retention, and analytics.
+            Q: What is your company?
+            A: Your company is a global MarTech product company that helps B2C brands create amazing digital experiences with a range of products that help in acquisition, engagement, retention, and analytics.
             
             Q: What is email deliverability?
             A: Email deliverability refers to the ability to deliver emails to subscribers' inboxes. It's affected by factors like sender reputation, email content, and technical setup.
             
-            Q: How does Netcore improve email open rates?
-            A: Netcore improves email open rates through AI-powered send time optimization, subject line recommendations, content personalization, and maintaining high deliverability standards.
+            Q: How does your company improve email open rates?
+            A: Your company improves email open rates through AI-powered send time optimization, subject line recommendations, content personalization, and maintaining high deliverability standards.
             
             Q: What is a Customer Data Platform (CDP)?
             A: A Customer Data Platform (CDP) is a unified customer database that collects, organizes, and activates customer data from multiple sources to create a single customer view for personalized marketing.
@@ -181,10 +187,10 @@ class MarketingChatbot:
         """
         # Enhance the user message with marketing context
         enhanced_message = f"""
-        As a marketing AI assistant for Netcore Cloud, please help with: {user_message}
+        As a marketing AI assistant for your company, please help with: {user_message}
         
         Provide information about marketing best practices, campaign optimization, 
-        or Netcore's specific features if relevant. If unsure, suggest relevant 
+        or your company's specific features if relevant. If unsure, suggest relevant 
         resources or next steps.
         """
         
@@ -198,23 +204,23 @@ class MarketingChatbot:
             "source_documents": [doc.page_content for doc in response.get("source_documents", [])]
         }
         
-        # Optional: If integrated with Netcore, log the conversation
-        if self.netcore_api_key:
-            self._log_to_netcore(user_message, response["answer"])
+        # Optional: If integrated with API, log the conversation
+        if self.api_key:
+            self._log_to_company(user_message, response["answer"])
             
         return result
     
-    def _log_to_netcore(self, user_message: str, bot_response: str):
+    def _log_to_company(self, user_message: str, bot_response: str):
         """
-        Log conversation to Netcore for analytics (example integration).
+        Log conversation to API for analytics (example integration).
         
         Args:
             user_message: User's question
             bot_response: Bot's response
         """
-        # This is a placeholder for Netcore API integration
-        # In a real implementation, you would use Netcore's API to log the interaction
-        print(f"Logging conversation to Netcore: Q: {user_message[:30]}... A: {bot_response[:30]}...")
+        # This is a placeholder for API integration
+        # In a real implementation, you would use your company's API to log the interaction
+        print(f"Logging conversation to API: Q: {user_message[:30]}... A: {bot_response[:30]}...")
         
     def clear_history(self):
         """Reset the conversation history"""
@@ -354,7 +360,7 @@ if __name__ == "__main__":
         "How can I improve my email open rates?",
         "Tell me about customer segmentation",
         "What's the best way to create personalized campaigns?",
-        "How does Netcore's AI technology work?",
+        "How does your company's AI technology work?",
     ]
     
     for query in queries:

@@ -13,26 +13,34 @@ import os
 import json
 from datetime import datetime, timedelta
 
-class CampaignWorkflowOptimizer:
-    def __init__(self, netcore_api_key: Optional[str] = None):
-        """
-        Initialize the Campaign Workflow Optimizer.
+class WorkflowOptimizer:
+    """
+    AI-powered campaign workflow optimizer.
+    Optimizes marketing campaign workflows using machine learning
+    to maximize engagement and conversion rates.
+    """
+    
+    def __init__(self,
+                config_path: Optional[str] = None,
+                api_key: Optional[str] = None,
+                use_gpu: bool = False):
+        """Initialize the workflow optimizer"""
+        self.api_key = api_key
+        self.use_gpu = use_gpu
+        self.config = self._load_config(config_path)
         
-        Args:
-            netcore_api_key: API key for Netcore integration
-        """
-        self.netcore_api_key = netcore_api_key
-        self.model = None
-        self.preprocessor = None
-        self.feature_importance = {}
-        self.best_workflows = {}
-        
-        print("Campaign Workflow Optimizer initialized")
-        
+    def _load_historical_data(self, data_path: Optional[str] = None):
+        """Load historical campaign data"""
+        if data_path and os.path.exists(data_path):
+            return pd.read_csv(data_path)
+        else:
+            print("No historical data found. Using default optimization strategy.")
+            return None
+    
     def load_campaign_data(self, 
                           filepath: Optional[str] = None, 
                           data: Optional[pd.DataFrame] = None,
-                          use_netcore_api: bool = False,
+                          use_api: bool = False,
                           sample_size: int = 500) -> pd.DataFrame:
         """
         Load historical campaign data.
@@ -40,7 +48,7 @@ class CampaignWorkflowOptimizer:
         Args:
             filepath: Path to CSV file with campaign data
             data: Pandas DataFrame with campaign data
-            use_netcore_api: Whether to fetch data from Netcore API
+            use_api: Whether to fetch data from API
             sample_size: Size of sample data to create if no data provided
             
         Returns:
@@ -56,11 +64,11 @@ class CampaignWorkflowOptimizer:
             print(f"Data loaded from {filepath} with {len(self.data)} campaign records")
             return self.data
             
-        if use_netcore_api and self.netcore_api_key:
-            # This would be replaced with actual API call to Netcore
-            print("Fetching campaign data from Netcore API (mock)")
+        if use_api and self.api_key:
+            # This would be replaced with actual API call
+            print("Fetching campaign data from API (mock)")
             self.data = self._create_sample_data(sample_size)
-            self.data['source'] = 'netcore_api'
+            self.data['source'] = 'api'
             return self.data
             
         # Create sample data if no source provided
@@ -608,20 +616,20 @@ class CampaignWorkflowOptimizer:
     
     def export_workflow_recommendations(self, 
                                       filepath: str = 'workflow_recommendations.json',
-                                      netcore_format: bool = False) -> None:
+                                      api_format: bool = False) -> None:
         """
-        Export workflow recommendations to a file or Netcore format.
+        Export workflow recommendations to a file or API format.
         
         Args:
             filepath: Path to save the recommendations
-            netcore_format: Whether to format for Netcore API
+            api_format: Whether to format for API integration
         """
         if not self.best_workflows:
             raise ValueError("No workflow recommendations available.")
             
-        if netcore_format:
-            # Format for Netcore API
-            netcore_recommendations = []
+        if api_format:
+            # Format for API integration
+            api_recommendations = []
             
             for key, workflow in self.best_workflows.items():
                 campaign_type, target_segment = key.split('_', 1)
@@ -638,7 +646,7 @@ class CampaignWorkflowOptimizer:
                 if workflow['workflow'].get('social_used', 0) == 1:
                     channels.append('social')
                     
-                netcore_rec = {
+                api_rec = {
                     'campaign_type': campaign_type,
                     'segment': target_segment,
                     'duration': workflow['workflow'].get('duration_days', 7),
@@ -656,10 +664,10 @@ class CampaignWorkflowOptimizer:
                     }
                 }
                 
-                netcore_recommendations.append(netcore_rec)
+                api_recommendations.append(api_rec)
                 
             with open(filepath, 'w') as f:
-                json.dump({'recommendations': netcore_recommendations}, f, indent=4)
+                json.dump({'recommendations': api_recommendations}, f, indent=4)
         else:
             # Export as-is
             with open(filepath, 'w') as f:
@@ -670,7 +678,7 @@ class CampaignWorkflowOptimizer:
 # Example usage
 if __name__ == "__main__":
     # Initialize the optimizer
-    optimizer = CampaignWorkflowOptimizer()
+    optimizer = WorkflowOptimizer()
     
     # Load data
     optimizer.load_campaign_data(sample_size=500)
@@ -719,4 +727,4 @@ if __name__ == "__main__":
     print(f"Predicted ROI: {promotional_workflow['predicted_performance']:.2f}")
     
     # Export recommendations
-    optimizer.export_workflow_recommendations(netcore_format=True) 
+    optimizer.export_workflow_recommendations(api_format=True) 

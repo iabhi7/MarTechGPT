@@ -9,30 +9,32 @@ from transformers import pipeline
 import json
 import os
 
-class CustomerSegmentAnalyzer:
-    def __init__(self, n_clusters: int = 4, random_state: int = 42):
-        """
-        Initialize the Customer Segment Analyzer.
+class SegmentAnalyzer:
+    """
+    AI-powered customer segmentation engine.
+    Uses machine learning to identify and analyze customer segments
+    based on behavior patterns and characteristics.
+    """
+    
+    def __init__(self,
+                data_path: Optional[str] = None,
+                api_key: Optional[str] = None):
+        """Initialize the segment analyzer"""
+        self.api_key = api_key
+        self.data = self._load_data(data_path)
         
-        Args:
-            n_clusters: Number of segments to create
-            random_state: Random seed for reproducibility
-        """
-        self.n_clusters = n_clusters
-        self.random_state = random_state
-        self.scaler = StandardScaler()
-        self.model = KMeans(n_clusters=n_clusters, random_state=random_state)
-        self.segments = None
-        self.feature_importance = {}
-        
-        # Initialize the text classification pipeline for analyzing customer feedback
-        self.nlp_classifier = pipeline("text-classification", 
-                                      model="distilbert-base-uncased-finetuned-sst-2-english")
-        
+    def _load_data(self, data_path: Optional[str] = None):
+        """Load customer data for analysis"""
+        if data_path and os.path.exists(data_path):
+            return pd.read_csv(data_path)
+        else:
+            print("No data file found. Using default segmentation strategy.")
+            return None
+    
     def load_data(self, 
                  filepath: Optional[str] = None, 
                  data: Optional[pd.DataFrame] = None,
-                 netcore_api_key: Optional[str] = None,
+                 api_key: Optional[str] = None,
                  sample_size: int = 1000) -> pd.DataFrame:
         """
         Load customer data from file or DataFrame.
@@ -40,7 +42,7 @@ class CustomerSegmentAnalyzer:
         Args:
             filepath: Path to CSV file with customer data
             data: Pandas DataFrame with customer data
-            netcore_api_key: API key for Netcore integration
+            api_key: API key for external service integration
             sample_size: Size of sample data to create if no data provided
             
         Returns:
@@ -56,11 +58,11 @@ class CustomerSegmentAnalyzer:
             print(f"Data loaded from {filepath} with {len(self.data)} records")
             return self.data
             
-        if netcore_api_key:
-            # This would be replaced with actual API call to Netcore
-            print("Fetching data from Netcore API (mock)")
+        if api_key:
+            # This would be replaced with actual API call to external service
+            print("Fetching data from external API (mock)")
             self.data = self._create_sample_data(sample_size)
-            self.data['source'] = 'netcore_api'
+            self.data['source'] = 'external_api'
             return self.data
             
         # Create sample data if no source provided
@@ -556,13 +558,13 @@ class CustomerSegmentAnalyzer:
         
     def export_segments(self, 
                        filepath: str = 'customer_segments.csv',
-                       netcore_api_key: Optional[str] = None) -> None:
+                       api_key: Optional[str] = None) -> None:
         """
-        Export customer segments to CSV or Netcore platform.
+        Export customer segments to CSV or external platform.
         
         Args:
             filepath: Path to save the CSV file
-            netcore_api_key: API key for Netcore integration
+            api_key: API key for external service integration
         """
         if not hasattr(self, 'segments') or self.segments is None:
             raise ValueError("Segments not created yet")
@@ -571,12 +573,12 @@ class CustomerSegmentAnalyzer:
         self.segments.to_csv(filepath, index=False)
         print(f"Segments exported to {filepath}")
         
-        # If Netcore API key is provided, upload to Netcore
-        if netcore_api_key:
-            print("Uploading segments to Netcore (example integration)")
-            # This would be replaced with actual API call to Netcore
-            # In a real implementation, you would use Netcore's API to upload segments
-            print("Segments would be uploaded to Netcore for campaign targeting")
+        # If API key is provided, upload to external service
+        if api_key:
+            print("Uploading segments to external service (example integration)")
+            # This would be replaced with actual API call to the service
+            # In a real implementation, you would use the service's API to upload segments
+            print("Segments would be uploaded to external service for campaign targeting")
     
     def get_segment_for_customer(self, customer_id: str) -> Dict[str, Any]:
         """
@@ -621,7 +623,7 @@ class CustomerSegmentAnalyzer:
 # Example usage
 if __name__ == "__main__":
     # Initialize the segment analyzer
-    analyzer = CustomerSegmentAnalyzer(n_clusters=5)
+    analyzer = SegmentAnalyzer(n_clusters=5)
     
     # Load and preprocess data
     data = analyzer.load_data(sample_size=1000)

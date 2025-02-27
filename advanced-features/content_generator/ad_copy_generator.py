@@ -12,20 +12,26 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class AdCopyGenerator:
+    """
+    AI-powered ad copy generator.
+    Uses machine learning to generate and optimize advertising copy
+    across different channels and formats.
+    """
+
     def __init__(self, 
                  model_name: str = "mistralai/Mistral-7B-Instruct-v0.2", 
-                 netcore_api_key: Optional[str] = None,
+                 api_key: Optional[str] = None,
                  device: str = "auto"):
         """
         Initialize the Ad Copy Generator.
         
         Args:
             model_name: Name of the pretrained model to use
-            netcore_api_key: API key for Netcore integration
+            api_key: API key for Netcore integration
             device: Device to use for inference ("cpu", "cuda", "auto")
         """
         self.model_name = model_name
-        self.netcore_api_key = netcore_api_key
+        self.api_key = api_key
         
         print(f"Loading model {model_name}...")
         self._initialize_model(model_name, device)

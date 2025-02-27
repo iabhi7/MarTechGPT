@@ -25,19 +25,21 @@ logger = logging.getLogger('journey_orchestrator')
 
 class JourneyOrchestrator:
     """
-    AI-powered customer journey orchestrator that creates personalized
-    cross-channel marketing journeys optimized for conversion and engagement.
+    AI-powered customer journey orchestration engine.
+    Optimizes multi-channel marketing campaigns using machine learning.
     """
     
     def __init__(self, 
                 journey_config_path: Optional[str] = None,
-                use_predictive_optimization: bool = True):
+                use_predictive_optimization: bool = True,
+                api_key: Optional[str] = None):
         """
         Initialize the Journey Orchestrator.
         
         Args:
             journey_config_path: Optional path to journey configuration file
             use_predictive_optimization: Whether to use ML for journey optimization
+            api_key: Optional API key for services
         """
         self.journeys = {}
         self.active_customer_journeys = {}
@@ -45,6 +47,7 @@ class JourneyOrchestrator:
         self.channel_configs = self._default_channel_configs()
         self.use_predictive_optimization = use_predictive_optimization
         self.conversion_models = {}
+        self.api_key = api_key
         
         # Load journey config if provided
         if journey_config_path and os.path.exists(journey_config_path):
@@ -60,35 +63,35 @@ class JourneyOrchestrator:
                 "throttle_period": 24,  # hours between messages
                 "delivery_time_optimization": True,
                 "max_frequency": 2,  # max emails per week
-                "api_endpoint": "https://api.netcore.com/email/send"
+                "api_endpoint": "https://api.your_company.com/email/send"
             },
             "push": {
                 "send_delay": 0,
                 "throttle_period": 48,
                 "delivery_time_optimization": True,
                 "max_frequency": 3,
-                "api_endpoint": "https://api.netcore.com/push/send"
+                "api_endpoint": "https://api.your_company.com/push/send"
             },
             "sms": {
                 "send_delay": 0,
                 "throttle_period": 72,
                 "delivery_time_optimization": True,
                 "max_frequency": 1,
-                "api_endpoint": "https://api.netcore.com/sms/send"
+                "api_endpoint": "https://api.your_company.com/sms/send"
             },
             "in_app": {
                 "send_delay": 0,
                 "throttle_period": 24,
                 "delivery_time_optimization": False,
                 "max_frequency": 5,
-                "api_endpoint": "https://api.netcore.com/inapp/display"
+                "api_endpoint": "https://api.your_company.com/inapp/display"
             },
             "whatsapp": {
                 "send_delay": 0,
                 "throttle_period": 48,
                 "delivery_time_optimization": True,
                 "max_frequency": 2,
-                "api_endpoint": "https://api.netcore.com/whatsapp/send"
+                "api_endpoint": "https://api.your_company.com/whatsapp/send"
             }
         }
     
@@ -1021,7 +1024,7 @@ class JourneyOrchestrator:
     def _send_to_channel(self, journey_id: str, customer_id: str, 
                        channel: str, content: Dict[str, Any],
                        step_id: str) -> Dict[str, Any]:
-        """Send a message to a channel using Netcore Cloud API."""
+        """Send a message to a channel using the messaging API."""
         try:
             # Get channel config
             channel_config = self.channel_configs.get(channel, {})
@@ -1031,7 +1034,7 @@ class JourneyOrchestrator:
                 logger.warning(f"No API endpoint defined for channel '{channel}'")
                 return {"status": "error", "message": f"No API endpoint for channel '{channel}'"}
                 
-            # In a real implementation, this would make an API call to Netcore's services
+            # In a real implementation, this would make an API call to the messaging service
             # For demonstration, we'll simulate the API call
             
             # Prepare payload

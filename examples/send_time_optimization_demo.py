@@ -19,7 +19,7 @@ load_dotenv()
 from advanced_features.send_time_optimizer.optimizer import SendTimeOptimizer
 
 def main():
-    print("⏰ Netcore Send Time Optimization Demo")
+    print("⏰ API Send Time Optimization Demo")
     print("=" * 50)
     
     # Initialize the optimizer
@@ -103,11 +103,11 @@ def main():
     export_path = optimizer.export_optimal_times(
         customer_ids=target_customers,
         output_format='csv',
-        netcore_format=True
+        api_format=True
     )
     
     print(f"   Optimal send times exported to {export_path}")
-    print("   This file can be imported directly to Netcore Cloud for campaign scheduling")
+    print("   This file can be imported directly to AI Cloud for campaign scheduling")
     
     # Save the model
     print("\n7️⃣ Saving the trained model...")

@@ -24,18 +24,19 @@ logger = logging.getLogger('send_time_optimizer')
 
 class SendTimeOptimizer:
     """
-    Machine learning-powered send time optimizer that predicts the best time to 
-    send marketing communications to individual customers based on their past engagement.
+    AI-powered send time optimization engine.
+    Determines the optimal time to send marketing communications
+    based on historical engagement data.
     """
     
-    def __init__(self, time_zone: str = 'UTC'):
-        """
-        Initialize the Send Time Optimizer.
-        
-        Args:
-            time_zone: Default timezone for predictions (e.g., 'UTC', 'US/Eastern')
-        """
-        self.time_zone = time_zone
+    def __init__(self, 
+                historical_data_path: Optional[str] = None,
+                api_key: Optional[str] = None,
+                use_gpu: bool = False):
+        """Initialize the send time optimizer"""
+        self.historical_data = self._load_historical_data(historical_data_path)
+        self.api_key = api_key
+        self.use_gpu = use_gpu
         self.model = None
         self.preprocessor = None
         self.feature_importance = {}
@@ -60,76 +61,42 @@ class SendTimeOptimizer:
         }
         logger.info("Send Time Optimizer initialized")
         
-    def load_historical_data(self, data: Optional[pd.DataFrame] = None, 
-                            file_path: Optional[str] = None,
-                            netcore_api_key: Optional[str] = None,
-                            start_date: Optional[str] = None,
-                            end_date: Optional[str] = None) -> pd.DataFrame:
-        """
-        Load historical engagement data from various sources.
-        
-        Args:
-            data: DataFrame containing historical data
-            file_path: Path to CSV file with historical data
-            netcore_api_key: API key to fetch data from Netcore
-            start_date: Start date for fetching data from Netcore (YYYY-MM-DD)
-            end_date: End date for fetching data from Netcore (YYYY-MM-DD)
-            
-        Returns:
-            DataFrame with historical engagement data
-        """
-        if data is not None:
-            logger.info(f"Using provided DataFrame with {len(data)} records")
-            self.data = data
-        elif file_path:
-            logger.info(f"Loading data from file: {file_path}")
-            self.data = pd.read_csv(file_path)
-        elif netcore_api_key:
-            logger.info(f"Fetching data from Netcore API from {start_date} to {end_date}")
-            # In a real implementation, this would use the Netcore integration module
-            from utils.netcore_integration import NetcoreIntegration
-            netcore = NetcoreIntegration(api_key=netcore_api_key)
-            self.data = netcore.fetch_campaign_engagement_data(
-                start_date=start_date,
-                end_date=end_date,
-                include_send_times=True
-            )
+    def _load_historical_data(self, data_path: Optional[str] = None):
+        """Load historical engagement data"""
+        if data_path and os.path.exists(data_path):
+            return pd.read_csv(data_path)
         else:
-            # Create sample data for demo purposes
-            logger.info("No data source provided. Creating sample data for demonstration.")
-            self.data = self._create_sample_data()
-            
-        self._validate_and_preprocess_data()
-        return self.data
+            print("No historical data found. Using default optimization strategy.")
+            return None
     
     def _validate_and_preprocess_data(self):
         """Validate and preprocess the loaded data."""
         required_columns = ['customer_id', 'send_timestamp', 'open_timestamp', 'click_timestamp']
         
         # Check required columns
-        missing_columns = [col for col in required_columns if col not in self.data.columns]
+        missing_columns = [col for col in required_columns if col not in self.historical_data.columns]
         if missing_columns:
             raise ValueError(f"Missing required columns: {missing_columns}")
             
         # Convert timestamps to datetime if they're not already
         for col in ['send_timestamp', 'open_timestamp', 'click_timestamp']:
-            if self.data[col].dtype != 'datetime64[ns]':
-                self.data[col] = pd.to_datetime(self.data[col])
+            if self.historical_data[col].dtype != 'datetime64[ns]':
+                self.historical_data[col] = pd.to_datetime(self.historical_data[col])
                 
         # Calculate engagement metrics
-        self.data['open_delay'] = (self.data['open_timestamp'] - self.data['send_timestamp']).dt.total_seconds() / 60
-        self.data['click_delay'] = (self.data['click_timestamp'] - self.data['send_timestamp']).dt.total_seconds() / 60
+        self.historical_data['open_delay'] = (self.historical_data['open_timestamp'] - self.historical_data['send_timestamp']).dt.total_seconds() / 60
+        self.historical_data['click_delay'] = (self.historical_data['click_timestamp'] - self.historical_data['send_timestamp']).dt.total_seconds() / 60
         
         # Filter out invalid delays (negative or extremely long)
-        self.data = self.data[self.data['open_delay'] >= 0]
-        self.data = self.data[self.data['open_delay'] <= 24*60]  # Max 24 hours
+        self.historical_data = self.historical_data[self.historical_data['open_delay'] >= 0]
+        self.historical_data = self.historical_data[self.historical_data['open_delay'] <= 24*60]  # Max 24 hours
         
         # Extract time features
-        self.data['send_hour'] = self.data['send_timestamp'].dt.hour
-        self.data['send_day'] = self.data['send_timestamp'].dt.dayofweek
-        self.data['send_weekend'] = self.data['send_day'].apply(lambda x: 1 if x >= 5 else 0)
+        self.historical_data['send_hour'] = self.historical_data['send_timestamp'].dt.hour
+        self.historical_data['send_day'] = self.historical_data['send_timestamp'].dt.dayofweek
+        self.historical_data['send_weekend'] = self.historical_data['send_day'].apply(lambda x: 1 if x >= 5 else 0)
         
-        logger.info(f"Data validated and preprocessed: {len(self.data)} valid records")
+        logger.info(f"Data validated and preprocessed: {len(self.historical_data)} valid records")
     
     def _create_sample_data(self, n_samples: int = 10000) -> pd.DataFrame:
         """Create sample data for demonstration purposes."""
@@ -192,13 +159,13 @@ class SendTimeOptimizer:
         Returns:
             Tuple of (X, y) where X is the feature matrix and y is the target
         """
-        if not hasattr(self, 'data'):
+        if not hasattr(self, 'historical_data'):
             raise ValueError("No data loaded. Call load_historical_data first.")
             
         # Group by customer to get their engagement patterns
         customer_data = []
         
-        for customer_id, group in self.data.groupby('customer_id'):
+        for customer_id, group in self.historical_data.groupby('customer_id'):
             # Calculate average engagement metrics per hour and day of week
             for day in range(7):  # 0-6 for Monday-Sunday
                 for hour in range(24):
@@ -380,21 +347,21 @@ class SendTimeOptimizer:
                         record['campaign_type'] = campaign_type
                     elif 'campaign_type' in self.model[0].transformers_[1][2]:
                         # Use most common campaign type from training data
-                        customer_data = self.data[self.data['customer_id'] == customer_id]
+                        customer_data = self.historical_data[self.historical_data['customer_id'] == customer_id]
                         if len(customer_data) > 0 and 'campaign_type' in customer_data.columns:
                             record['campaign_type'] = customer_data['campaign_type'].mode()[0]
                         else:
-                            record['campaign_type'] = self.data['campaign_type'].mode()[0]
+                            record['campaign_type'] = self.historical_data['campaign_type'].mode()[0]
                             
                     if device:
                         record['device'] = device
                     elif 'device' in self.model[0].transformers_[1][2]:
                         # Use most common device from training data
-                        customer_data = self.data[self.data['customer_id'] == customer_id]
+                        customer_data = self.historical_data[self.historical_data['customer_id'] == customer_id]
                         if len(customer_data) > 0 and 'device' in customer_data.columns:
                             record['device'] = customer_data['device'].mode()[0]
                         else:
-                            record['device'] = self.data['device'].mode()[0]
+                            record['device'] = self.historical_data['device'].mode()[0]
                             
                     prediction_data.append(record)
                     
@@ -448,18 +415,18 @@ class SendTimeOptimizer:
         return pd.DataFrame(results)
     
     def schedule_campaign_sends(self, campaign_id: str, 
-                                customer_ids: List[str], 
-                                campaign_type: Optional[str] = None,
-                                netcore_api_key: Optional[str] = None,
-                                default_send_time: Optional[datetime] = None) -> Dict[str, Any]:
+                            customer_ids: List[str], 
+                            campaign_type: Optional[str] = None,
+                            api_key: Optional[str] = None,
+                            default_send_time: Optional[datetime] = None) -> Dict[str, Any]:
         """
         Schedule a campaign to be sent at optimal times for each customer.
         
         Args:
-            campaign_id: Netcore campaign ID
+            campaign_id: Campaign ID
             customer_ids: List of customer IDs
             campaign_type: Type of campaign
-            netcore_api_key: Netcore API key for integration
+            api_key: API key for integration
             default_send_time: Default send time if predictions can't be made
             
         Returns:
@@ -497,10 +464,10 @@ class SendTimeOptimizer:
                 'hour': hour
             })
             
-        # If Netcore API key is provided, upload schedule
-        if netcore_api_key:
-            schedule_uploaded = self._upload_schedule_to_netcore(
-                netcore_api_key=netcore_api_key,
+        # If API key is provided, upload schedule
+        if api_key:
+            schedule_uploaded = self._upload_schedule_to_api(
+                api_key=api_key,
                 campaign_id=campaign_id,
                 scheduling_data=scheduling_data
             )
@@ -516,31 +483,31 @@ class SendTimeOptimizer:
             'scheduled_sends': scheduling_data
         }
     
-    def _upload_schedule_to_netcore(self, netcore_api_key: str,
-                                  campaign_id: str,
-                                  scheduling_data: List[Dict[str, Any]]) -> bool:
-        """Upload send schedule to Netcore."""
+    def _upload_schedule_to_api(self, api_key: str,
+                              campaign_id: str,
+                              scheduling_data: List[Dict[str, Any]]) -> bool:
+        """Upload send schedule to API."""
         try:
-            from utils.netcore_integration import NetcoreIntegration
+            from utils.api_integration import APIIntegration
             
-            netcore = NetcoreIntegration(api_key=netcore_api_key)
+            api_client = APIIntegration(api_key=api_key)
             
-            # Format data for Netcore API
-            netcore_schedule = [{
+            # Format data for API
+            schedule_data = [{
                 'customer_id': item['customer_id'],
                 'send_time': item['send_datetime'].isoformat()
             } for item in scheduling_data]
             
             # Upload schedule
-            result = netcore.upload_campaign_schedule(
+            result = api_client.upload_campaign_schedule(
                 campaign_id=campaign_id,
-                schedule_data=netcore_schedule
+                schedule_data=schedule_data
             )
             
-            logger.info(f"Uploaded schedule for campaign {campaign_id} to Netcore")
+            logger.info(f"Uploaded schedule for campaign {campaign_id} to API")
             return True
         except Exception as e:
-            logger.error(f"Failed to upload schedule to Netcore: {e}")
+            logger.error(f"Failed to upload schedule to API: {e}")
             return False
     
     def visualize_optimal_times(self, data: Optional[pd.DataFrame] = None,
@@ -556,11 +523,11 @@ class SendTimeOptimizer:
             Matplotlib figure
         """
         if data is None:
-            if not hasattr(self, 'data'):
+            if not hasattr(self, 'historical_data'):
                 raise ValueError("No data available. Call load_historical_data first.")
                 
             # Get sample customers
-            sample_customers = self.data['customer_id'].unique()[:10]
+            sample_customers = self.historical_data['customer_id'].unique()[:10]
             data = self.predict_optimal_times(customer_ids=sample_customers)
             
         # Prepare data for heatmap
@@ -593,7 +560,7 @@ class SendTimeOptimizer:
     def export_optimal_times(self, customer_ids: List[str],
                           output_format: str = 'csv',
                           file_path: Optional[str] = None,
-                          netcore_format: bool = False) -> Union[pd.DataFrame, str]:
+                          api_format: bool = False) -> Union[pd.DataFrame, str]:
         """
         Export optimal send times for customers.
         
@@ -601,7 +568,7 @@ class SendTimeOptimizer:
             customer_ids: List of customer IDs
             output_format: 'csv', 'json', or 'dataframe'
             file_path: Path to save the export file
-            netcore_format: Whether to format for Netcore import
+            api_format: Whether to format for API import
             
         Returns:
             DataFrame or path to saved file
@@ -609,13 +576,13 @@ class SendTimeOptimizer:
         # Get optimal send times
         optimal_times = self.predict_optimal_times(customer_ids=customer_ids)
         
-        # Format for Netcore if requested
-        if netcore_format:
+        # Format for API if requested
+        if api_format:
             # Use only the best time for each customer
             best_times = optimal_times.loc[optimal_times.groupby('customer_id')['predicted_engagement_delay_minutes'].idxmin()]
             
-            # Format for Netcore
-            netcore_data = []
+            # Format for API
+            api_data = []
             current_date = datetime.now().date()
             
             for _, row in best_times.iterrows():
@@ -632,14 +599,14 @@ class SendTimeOptimizer:
                 send_datetime = datetime.combine(next_occurrence, 
                                                 datetime.min.time()) + timedelta(hours=hour)
                 
-                netcore_data.append({
+                api_data.append({
                     'customer_id': customer_id,
                     'optimal_send_time': send_datetime.isoformat(),
                     'day_of_week': row['day_name'],
                     'hour_of_day': hour
                 })
                 
-            optimal_times = pd.DataFrame(netcore_data)
+            optimal_times = pd.DataFrame(api_data)
         
         # Export based on format
         if output_format == 'dataframe':

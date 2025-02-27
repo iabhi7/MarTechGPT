@@ -6,12 +6,18 @@ import requests
 from typing import List, Dict, Any, Optional
 
 class SubjectLineOptimizer:
+    """
+    AI-powered subject line optimization engine.
+    Uses machine learning to generate and optimize email subject lines
+    for maximum open rates.
+    """
+    
     def __init__(self, api_key: Optional[str] = None, model_name: str = "gpt2"):
         """
         Initialize the Subject Line Optimizer.
         
         Args:
-            api_key: API key for OpenAI or Netcore API integration
+            api_key: API key for OpenAI or API integration
             model_name: Model to use for text generation
         """
         self.api_key = api_key
@@ -19,30 +25,30 @@ class SubjectLineOptimizer:
         self.generator = pipeline('text-generation', model=model_name)
         self.metrics_cache = {}
         
-    def load_historical_data(self, filepath: str = None, netcore_api: bool = False):
+    def load_historical_data(self, filepath: str = None, api_enabled: bool = False):
         """
-        Load historical email campaign data either from a file or Netcore API.
+        Load historical email campaign data either from a file or API.
         
         Args:
             filepath: Path to CSV file with historical data
-            netcore_api: Whether to fetch data from Netcore API
+            api_enabled: Whether to fetch data from API
         """
-        if netcore_api and self.api_key:
-            # Example of how we would connect to Netcore's API
+        if api_enabled and self.api_key:
+            # Example of how we would connect to the API
             headers = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json"
             }
             response = requests.get(
-                "https://api.netcore.co.in/campaigns/email/performance", 
+                "https://api.your-company.com/campaigns/email/performance", 
                 headers=headers
             )
             if response.status_code == 200:
                 data = response.json()
                 self.historical_data = pd.DataFrame(data['campaigns'])
-                print(f"Loaded {len(self.historical_data)} campaigns from Netcore API")
+                print(f"Loaded {len(self.historical_data)} campaigns from API")
             else:
-                print(f"Failed to load data from Netcore API: {response.status_code}")
+                print(f"Failed to load data from API: {response.status_code}")
                 self.historical_data = pd.DataFrame()
         elif filepath:
             self.historical_data = pd.DataFrame(pd.read_csv(filepath))

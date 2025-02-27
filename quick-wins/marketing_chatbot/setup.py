@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="netcore-marketing-chatbot",
+    name="AI-marketing-chatbot",
     version="0.1.0",
     packages=find_packages(),
     install_requires=[
@@ -17,9 +17,9 @@ setup(
     ],
     author="Your Name",
     author_email="your.email@example.com",
-    description="AI-powered marketing chatbot for Netcore",
-    keywords="marketing, chatbot, llm, ai, netcore",
-    url="https://github.com/yourusername/netcore-marketing-chatbot",
+    description="AI-powered marketing chatbot for AI Company",
+    keywords="marketing, chatbot, llm, ai",
+    url="https://github.com/yourusername/AI-marketing-chatbot",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

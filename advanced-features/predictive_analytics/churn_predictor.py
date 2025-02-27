@@ -14,30 +14,34 @@ import json
 import os
 from datetime import datetime, timedelta
 
-class CustomerChurnPredictor:
-    def __init__(self, netcore_api_key: Optional[str] = None):
-        """
-        Initialize the Customer Churn Predictor.
+class ChurnPredictor:
+    """
+    AI-powered churn prediction engine.
+    Uses machine learning to identify customers at risk of churning
+    and provides recommendations for retention.
+    """
+    
+    def __init__(self,
+                model_path: Optional[str] = None,
+                api_key: Optional[str] = None,
+                use_gpu: bool = False):
+        """Initialize the churn predictor"""
+        self.api_key = api_key
+        self.use_gpu = use_gpu
+        self.model = self._load_model(model_path)
         
-        Args:
-            netcore_api_key: API key for Netcore integration
-        """
-        self.netcore_api_key = netcore_api_key
-        self.model = None
-        self.preprocessor = None
-        self.feature_importance = {}
-        self.risk_score_thresholds = {
-            'high': 0.7,
-            'medium': 0.4,
-            'low': 0.2
-        }
-        
-        print("Customer Churn Predictor initialized")
-        
+    def _load_data(self, data_path: Optional[str] = None):
+        """Load customer data for analysis"""
+        if data_path and os.path.exists(data_path):
+            return pd.read_csv(data_path)
+        else:
+            print("No data file found. Using default prediction strategy.")
+            return None
+    
     def load_customer_data(self, 
                          filepath: Optional[str] = None, 
                          data: Optional[pd.DataFrame] = None,
-                         use_netcore_api: bool = False,
+                         use_api: bool = False,
                          sample_size: int = 1000) -> pd.DataFrame:
         """
         Load customer behavioral data.
@@ -45,7 +49,7 @@ class CustomerChurnPredictor:
         Args:
             filepath: Path to CSV file with customer data
             data: Pandas DataFrame with customer data
-            use_netcore_api: Whether to fetch data from Netcore API
+            use_api: Whether to fetch data from API
             sample_size: Size of sample data to create if no data provided
             
         Returns:
@@ -61,11 +65,11 @@ class CustomerChurnPredictor:
             print(f"Data loaded from {filepath} with {len(self.data)} customer records")
             return self.data
             
-        if use_netcore_api and self.netcore_api_key:
-            # This would be replaced with actual API call to Netcore
-            print("Fetching customer data from Netcore API (mock)")
+        if use_api and self.api_key:
+            # This would be replaced with actual API call to your company's API
+            print("Fetching customer data from API (mock)")
             self.data = self._create_sample_data(sample_size)
-            self.data['source'] = 'netcore_api'
+            self.data['source'] = 'api'
             return self.data
             
         # Create sample data if no source provided
@@ -684,7 +688,7 @@ class CustomerChurnPredictor:
 # Example usage
 if __name__ == "__main__":
     # Initialize predictor
-    predictor = CustomerChurnPredictor()
+    predictor = ChurnPredictor()
     
     # Load data
     data = predictor.load_customer_data(sample_size=1000)

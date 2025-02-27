@@ -14,25 +14,25 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
-logger = logging.getLogger('netcore_integration')
+logger = logging.getLogger('api_integration')
 
-class NetcoreIntegration:
+class APIIntegration:
     """
-    Class for integrating with Netcore Cloud's API.
-    Allows bidirectional data flow between Netcore and the AI modules.
+    Class for integrating with your company's API.
+    Allows bidirectional data flow between API and the AI modules.
     """
     
-    def __init__(self, api_key: Optional[str] = None, base_url: str = "https://api.netcore.co.in"):
+    def __init__(self, api_key: Optional[str] = None, base_url: str = "https://api.your-company.com"):
         """
-        Initialize Netcore Integration.
+        Initialize API Integration.
         
         Args:
-            api_key: Netcore API key (will use from env if not provided)
-            base_url: Base URL for Netcore API
+            api_key: API key (will use from env if not provided)
+            base_url: Base URL for API
         """
-        self.api_key = api_key or os.getenv("NETCORE_API_KEY")
+        self.api_key = api_key or os.getenv("API_KEY")
         if not self.api_key:
-            logger.warning("No Netcore API key provided. Set NETCORE_API_KEY env variable or pass api_key.")
+            logger.warning("No API key provided. Set API_KEY env variable or pass api_key.")
             
         self.base_url = base_url
         self.headers = {
@@ -40,11 +40,11 @@ class NetcoreIntegration:
             "Content-Type": "application/json"
         }
         
-        logger.info("Netcore integration initialized")
+        logger.info("API integration initialized")
         
     def test_connection(self) -> bool:
         """
-        Test connection to Netcore API.
+        Test connection to API.
         
         Returns:
             True if connection is successful, False otherwise
@@ -59,15 +59,15 @@ class NetcoreIntegration:
                 headers=self.headers
             )
             response.raise_for_status()
-            logger.info("Successfully connected to Netcore API")
+            logger.info("Successfully connected to API")
             return True
         except requests.RequestException as e:
-            logger.error(f"Failed to connect to Netcore API: {e}")
+            logger.error(f"Failed to connect to API: {e}")
             return False
     
     def fetch_campaign_data(self, start_date: str, end_date: str) -> pd.DataFrame:
         """
-        Fetch campaign data from Netcore for analysis.
+        Fetch campaign data from API for analysis.
         
         Args:
             start_date: Start date in YYYY-MM-DD format
@@ -97,7 +97,7 @@ class NetcoreIntegration:
             campaigns = response.json().get("campaigns", [])
             df = pd.DataFrame(campaigns)
             
-            logger.info(f"Fetched {len(df)} campaigns from Netcore")
+            logger.info(f"Fetched {len(df)} campaigns from API")
             return df
         except requests.RequestException as e:
             logger.error(f"Failed to fetch campaign data: {e}")
@@ -106,7 +106,7 @@ class NetcoreIntegration:
             
     def fetch_customer_data(self, segment: Optional[str] = None, limit: int = 1000) -> pd.DataFrame:
         """
-        Fetch customer data from Netcore for analysis.
+        Fetch customer data from API for analysis.
         
         Args:
             segment: Optional segment filter
@@ -136,7 +136,7 @@ class NetcoreIntegration:
             customers = response.json().get("customers", [])
             df = pd.DataFrame(customers)
             
-            logger.info(f"Fetched {len(df)} customers from Netcore")
+            logger.info(f"Fetched {len(df)} customers from API")
             return df
         except requests.RequestException as e:
             logger.error(f"Failed to fetch customer data: {e}")
@@ -145,7 +145,7 @@ class NetcoreIntegration:
     
     def upload_customer_segments(self, segments: pd.DataFrame) -> bool:
         """
-        Upload customer segments to Netcore for targeting.
+        Upload customer segments to API for targeting.
         
         Args:
             segments: DataFrame with customer IDs and segment names
@@ -173,7 +173,7 @@ class NetcoreIntegration:
             )
             response.raise_for_status()
             
-            logger.info(f"Successfully uploaded {len(segments)} customer segments to Netcore")
+            logger.info(f"Successfully uploaded {len(segments)} customer segments to API")
             return True
         except requests.RequestException as e:
             logger.error(f"Failed to upload customer segments: {e}")
@@ -184,7 +184,7 @@ class NetcoreIntegration:
                                   content_data: List[Dict[str, Any]],
                                   campaign_id: Optional[str] = None) -> bool:
         """
-        Upload AI-generated content suggestions to Netcore.
+        Upload AI-generated content suggestions to API.
         
         Args:
             content_type: Type of content ('email', 'push', 'sms', 'social', 'ad')
@@ -216,7 +216,7 @@ class NetcoreIntegration:
             )
             response.raise_for_status()
             
-            logger.info(f"Successfully uploaded {len(content_data)} {content_type} content suggestions to Netcore")
+            logger.info(f"Successfully uploaded {len(content_data)} {content_type} content suggestions to API")
             return True
         except requests.RequestException as e:
             logger.error(f"Failed to upload content suggestions: {e}")
@@ -226,7 +226,7 @@ class NetcoreIntegration:
                                       recommendations: Dict[str, Any],
                                       campaign_id: Optional[str] = None) -> bool:
         """
-        Upload campaign optimization recommendations to Netcore.
+        Upload campaign optimization recommendations to API.
         
         Args:
             recommendations: Dictionary of campaign recommendations
@@ -254,7 +254,7 @@ class NetcoreIntegration:
             )
             response.raise_for_status()
             
-            logger.info("Successfully uploaded campaign recommendations to Netcore")
+            logger.info("Successfully uploaded campaign recommendations to API")
             return True
         except requests.RequestException as e:
             logger.error(f"Failed to upload campaign recommendations: {e}")
@@ -264,7 +264,7 @@ class NetcoreIntegration:
                                predictions: pd.DataFrame,
                                include_recommendations: bool = True) -> bool:
         """
-        Upload churn predictions to Netcore for targeted campaigns.
+        Upload churn predictions to API for targeted campaigns.
         
         Args:
             predictions: DataFrame with customer IDs and churn probabilities
@@ -282,7 +282,7 @@ class NetcoreIntegration:
             return False
             
         try:
-            # Prepare data in Netcore-compatible format
+            # Prepare data in API-compatible format
             prediction_data = []
             
             for _, row in predictions.iterrows():
@@ -305,7 +305,7 @@ class NetcoreIntegration:
             )
             response.raise_for_status()
             
-            logger.info(f"Successfully uploaded {len(predictions)} churn predictions to Netcore")
+            logger.info(f"Successfully uploaded {len(predictions)} churn predictions to API")
             return True
         except requests.RequestException as e:
             logger.error(f"Failed to upload churn predictions: {e}")

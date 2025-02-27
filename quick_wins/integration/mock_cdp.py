@@ -55,8 +55,12 @@ class MarketingCDPIntegration:
         with open(file_path, 'w') as f:
             json.dump(data, f, indent=2)
     
-    def generate_mock_data(self, num_users=100, num_interactions=500, num_campaigns=10):
-        """Generate mock data for demonstration purposes"""
+    def generate_mock_data(self, num_users=100, num_interactions=1000, num_campaigns=10):
+        """Generate mock data for testing"""
+        
+        # Use standard user segments
+        segments = ["High Value", "At Risk", "New", "Dormant"]
+        
         # Clear existing data
         self.user_profiles = []
         self.user_interactions = []
@@ -64,8 +68,6 @@ class MarketingCDPIntegration:
         
         # Generate user profiles
         industries = ["Retail", "Technology", "Finance", "Healthcare", "Education", "Manufacturing"]
-        segments = ["High Value", "Mid Value", "Low Value", "New Customer", "Churned", "At Risk"]
-        
         for i in range(num_users):
             user = {
                 "user_id": str(uuid.uuid4()),

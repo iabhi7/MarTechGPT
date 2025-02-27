@@ -102,7 +102,11 @@ def get_ab_tester():
 @app.get("/health", summary="Health check endpoint")
 async def health_check():
     """Check if the API is running correctly"""
-    return {"status": "healthy", "timestamp": datetime.datetime.now().isoformat()}
+    return {
+        "status": "healthy",
+        "service": "marketing-api",
+        "timestamp": datetime.datetime.now().isoformat()
+    }
 
 @app.post("/chat", 
          response_model=ChatResponse,

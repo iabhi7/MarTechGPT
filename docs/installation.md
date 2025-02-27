@@ -33,7 +33,7 @@ cp .env.example .env
 
 5. **Test the installation**
 
-```
+```bash
 # Run a simple example
 python examples/subject_line_optimizer_demo.py
 ```
@@ -42,7 +42,7 @@ python examples/subject_line_optimizer_demo.py
 
 If you're planning to contribute to the project or modify the code:
 
-```
+```bash
 # Install in development mode
 pip install -e .
 
@@ -58,7 +58,7 @@ For faster LLM inference, GPU acceleration is recommended:
 2. Install the CUDA toolkit and cuDNN appropriate for your system
 3. Install PyTorch with CUDA support:
 
-```
+```bash
 pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
 ```
 

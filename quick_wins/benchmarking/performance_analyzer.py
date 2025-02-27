@@ -145,6 +145,12 @@ class PerformanceAnalyzer:
         print(f"Charts saved to {output_dir}/")
         return f"Charts saved to {output_dir}/"
 
+    def visualize_comparison(self, output_dir="benchmark_results"):
+        """Generate visualization charts of benchmark results"""
+        plt.figure(figsize=(12, 6))
+        plt.title("Platform Integration Performance")
+        plt.xlabel("Model Configuration")
+
 # Example usage
 if __name__ == "__main__":
     analyzer = PerformanceAnalyzer()

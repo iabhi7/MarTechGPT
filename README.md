@@ -12,7 +12,7 @@ The Netcore AI Marketing Suite delivers significant improvements in both cost ef
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          Netcore AI Marketing Suite                          │
+│                          Netcore AI Marketing Suite                         │
 ├─────────────┬─────────────┬─────────────┬─────────────────┬─────────────────┤
 │             │             │             │                 │                 │
 │ Subject Line│  Marketing  │  Customer   │     Content     │    Campaign     │
@@ -59,22 +59,22 @@ The Netcore AI Marketing Suite delivers significant improvements in both cost ef
 
 ```
 ┌───────────────────────────────────────────────────────────────────────────┐
-│                     MARKETING WORKFLOW IMPROVEMENT                         │
+│                     MARKETING WORKFLOW IMPROVEMENT                        │
 │                                                                           │
 │  BEFORE                                                                   │
-│  ┌────────┐     ┌────────────┐     ┌───────────┐     ┌─────────────┐     │
-│  │ Market │     │  Content   │     │ A/B Test  │     │ Performance │     │
-│  │Research│────►│ Creation   │────►│ Design    │────►│ Analysis    │     │
-│  │ 3 days │     │ 5 days     │     │ 2 days    │     │ 2 days      │     │
-│  └────────┘     └────────────┘     └───────────┘     └─────────────┘     │
+│  ┌────────┐     ┌────────────┐     ┌───────────┐     ┌─────────────┐      │
+│  │ Market │     │  Content   │     │ A/B Test  │     │ Performance │      │
+│  │Research│────►│ Creation   │────►│ Design    │────►│ Analysis    │      │
+│  │ 3 days │     │ 5 days     │     │ 2 days    │     │ 2 days      │      │
+│  └────────┘     └────────────┘     └───────────┘     └─────────────┘      │
 │                                                                           │
 │  AFTER (WITH AI SUITE)                                                    │
-│  ┌────────┐     ┌────────────┐     ┌───────────┐     ┌─────────────┐     │
-│  │ Market │     │  AI-Driven │     │ Automated │     │ Real-time   │     │
-│  │Research│────►│ Content    │────►│ A/B       │────►│ Performance │     │
-│  │ 1 day  │     │ 1 day      │     │ Testing   │     │ Analytics   │     │
-│  └────────┘     └────────────┘     │ 2 hours   │     │ Continuous  │     │
-│                                    └───────────┘     └─────────────┘     │
+│  ┌────────┐     ┌────────────┐     ┌───────────┐     ┌─────────────┐      │
+│  │ Market │     │  AI-Driven │     │ Automated │     │ Real-time   │      │
+│  │Research│────►│ Content    │────►│ A/B       │────►│ Performance │      │
+│  │ 1 day  │     │ 1 day      │     │ Testing   │     │ Analytics   │      │
+│  └────────┘     └────────────┘     │ 2 hours   │     │ Continuous  │      │
+│                                    └───────────┘     └─────────────┘      │
 │                                                                           │
 │  Total time reduction: 12 days → 2.25 days (81% efficiency improvement)   │
 └───────────────────────────────────────────────────────────────────────────┘
@@ -83,20 +83,20 @@ The Netcore AI Marketing Suite delivers significant improvements in both cost ef
 ### ROI Impact Across Marketing Functions
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                      ROI IMPACT BY FUNCTION                              │
-├──────────────────┬─────────────────────────┬───────────────────────────┬─┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                      ROI IMPACT BY FUNCTION                            │
+├──────────────────┬─────────────────────────┬───────────────────────────┘
 │                  │                         │                           │
 │ Email Marketing  │ Content Creation        │ Customer Support          │
-│ ┌─────────────┐  │ ┌─────────────┐         │ ┌─────────────┐          │
-│ │ Open Rates  │  │ │ Creation    │         │ │ Response    │          │
-│ │ +15-30%     │  │ │ Speed       │         │ │ Time        │          │
-│ └─────────────┘  │ │ 10x faster  │         │ │ -75%        │          │
-│ ┌─────────────┐  │ └─────────────┘         │ └─────────────┘          │
-│ │ Conversion  │  │ ┌─────────────┐         │ ┌─────────────┐          │
-│ │ Rate +20%   │  │ │ Quality     │         │ │ Resolution  │          │
-│ └─────────────┘  │ │ Improvement │         │ │ Rate +25%   │          │
-│                  │ │ Consistent  │         │ └─────────────┘          │
+│ ┌─────────────┐  │ ┌─────────────┐         │ ┌─────────────┐           │
+│ │ Open Rates  │  │ │ Creation    │         │ │ Response    │           │
+│ │ +15-30%     │  │ │ Speed       │         │ │ Time        │           │
+│ └─────────────┘  │ │ 10x faster  │         │ │ -75%        │           │
+│ ┌─────────────┐  │ └─────────────┘         │ └─────────────┘           │
+│ │ Conversion  │  │ ┌─────────────┐         │ ┌─────────────┐           │
+│ │ Rate +20%   │  │ │ Quality     │         │ │ Resolution  │           │
+│ └─────────────┘  │ │ Improvement │         │ │ Rate +25%   │           │
+│                  │ │ Consistent  │         │ └─────────────┘           │
 │                  │ └─────────────┘         │                           │
 └──────────────────┴─────────────────────────┴───────────────────────────┘
 ```
@@ -243,28 +243,28 @@ analyzer.export_segments("customer_segments.csv")
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                     CUSTOMER SEGMENTATION ARCHITECTURE                       │
+│                     CUSTOMER SEGMENTATION ARCHITECTURE                      │
 │                                                                             │
-│  ┌────────────────┐      ┌───────────────┐       ┌─────────────────────┐   │
-│  │                │      │               │       │                     │   │
-│  │ Customer Data  │─────►│ Preprocessing │──────►│ Clustering Models   │   │
-│  │                │      │ & Feature     │       │ (K-Means, DBSCAN,   │   │
-│  │ - Behavior     │      │ Engineering   │       │  Hierarchical)      │   │
-│  │ - Demographics │      │               │       │                     │   │
-│  │ - Transactions │      └───────────────┘       └──────────┬──────────┘   │
-│  │                │                                         │              │
-│  └────────────────┘                                         ▼              │
-│                                                   ┌────────────────────┐   │
-│                                                   │                    │   │
-│  ┌────────────────┐      ┌───────────────┐       │ Segment Creation   │   │
-│  │                │      │               │       │                    │   │
-│  │ Campaign       │◄─────┤ Segment       │◄──────┤ - Descriptive      │   │
-│  │ Targeting      │      │ Profiles      │       │   Statistics       │   │
-│  │                │      │               │       │ - Behavioral       │   │
-│  └────────────────┘      └───────────────┘       │   Patterns         │   │
-│                                                  │ - Predictive Value │   │
-│                                                  │                    │   │
-│                                                  └────────────────────┘   │
+│  ┌────────────────┐      ┌───────────────┐       ┌─────────────────────┐    │
+│  │                │      │               │       │                     │    │
+│  │ Customer Data  │─────►│ Preprocessing │──────►│ Clustering Models   │    │
+│  │                │      │ & Feature     │       │ (K-Means, DBSCAN,   │    │
+│  │ - Behavior     │      │ Engineering   │       │  Hierarchical)      │    │
+│  │ - Demographics │      │               │       │                     │    │
+│  │ - Transactions │      └───────────────┘       └──────────┬──────────┘    │
+│  │                │                                         │               │
+│  └────────────────┘                                         ▼               │
+│                                                   ┌────────────────────┐    │
+│                                                   │                    │    │
+│  ┌────────────────┐      ┌───────────────┐        │ Segment Creation   │    │
+│  │                │      │               │        │                    │    │
+│  │ Campaign       │◄─────┤ Segment       │◄──────-┤ - Descriptive      │    │
+│  │ Targeting      │      │ Profiles      │        │   Statistics       │    │
+│  │                │      │               │        │ - Behavioral       │    │
+│  └────────────────┘      └───────────────┘        │   Patterns         │    │
+│                                                   │ - Predictive Value │    │
+│                                                   │                    │    │
+│                                                   └────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 

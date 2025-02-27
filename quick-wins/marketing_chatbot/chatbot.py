@@ -11,12 +11,19 @@ from langchain.vectorstores import FAISS
 from langchain.document_loaders import TextLoader, CSVLoader
 from transformers import pipeline, AutoTokenizer, AutoModelForCausalLM
 import torch
+import time
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class MarketingChatbot:
     def __init__(self, 
                 knowledge_base_path: Optional[str] = None,
                 model_name: str = "mistralai/Mistral-7B-Instruct-v0.2",
-                netcore_api_key: Optional[str] = None):
+                netcore_api_key: Optional[str] = None,
+                quantize: bool = True):
         """
         Initialize the Marketing Chatbot.
         
@@ -24,6 +31,7 @@ class MarketingChatbot:
             knowledge_base_path: Path to knowledge base files (CSV or TXT)
             model_name: HuggingFace model to use
             netcore_api_key: API key for Netcore integration
+            quantize: Whether to apply quantization to reduce model size
         """
         self.model_name = model_name
         self.netcore_api_key = netcore_api_key
@@ -34,7 +42,7 @@ class MarketingChatbot:
         )
         
         print("Loading the language model...")
-        self._setup_llm()
+        self._setup_llm(quantize)
         
         print("Preparing the knowledge base...")
         self._setup_knowledge_base()
@@ -44,21 +52,45 @@ class MarketingChatbot:
         
         print("Marketing chatbot is ready!")
         
-    def _setup_llm(self):
+    def _setup_llm(self, quantize: bool):
         """Set up the language model for text generation"""
-        tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            device_map="auto",
-            torch_dtype=torch.float16,
-            load_in_8bit=True,  # For memory efficiency
-        )
+        start_time = time.time()
+        
+        # Load tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        
+        # Load model with quantization if enabled
+        if quantize:
+            logger.info(f"Loading model {self.model_name} with 8-bit quantization...")
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_name,
+                device_map="auto",
+                load_in_8bit=True,  # Enable 8-bit quantization
+                torch_dtype=torch.float16  # Use half precision
+            )
+        else:
+            logger.info(f"Loading model {self.model_name} without quantization...")
+            self.model = AutoModelForCausalLM.from_pretrained(
+                self.model_name,
+                device_map="auto",
+                torch_dtype=torch.float16
+            )
+        
+        load_time = time.time() - start_time
+        logger.info(f"Model loaded in {load_time:.2f} seconds")
+        
+        # Calculate and log memory usage
+        memory_used = torch.cuda.max_memory_allocated() / (1024 ** 3) if torch.cuda.is_available() else 0
+        logger.info(f"Memory usage: {memory_used:.2f} GB")
+        
+        self.model_size = self._calculate_model_size()
+        logger.info(f"Model size: {self.model_size:.2f} MB")
         
         # Create text generation pipeline
         pipe = pipeline(
             "text-generation",
-            model=model,
-            tokenizer=tokenizer,
+            model=self.model,
+            tokenizer=self.tokenizer,
             max_new_tokens=512,
             temperature=0.7,
             top_p=0.95,
@@ -188,6 +220,129 @@ class MarketingChatbot:
         """Reset the conversation history"""
         self.memory.clear()
         print("Conversation history has been cleared.")
+
+    def _calculate_model_size(self):
+        """Calculate the model size in MB"""
+        param_size = 0
+        for param in self.model.parameters():
+            param_size += param.nelement() * param.element_size()
+        buffer_size = 0
+        for buffer in self.model.buffers():
+            buffer_size += buffer.nelement() * buffer.element_size()
+        
+        size_mb = (param_size + buffer_size) / 1024**2
+        return size_mb
+    
+    def get_response(self, user_message, context=None):
+        """
+        Generate a response to the user's message
+        
+        Args:
+            user_message (str): The user's input message
+            context (dict, optional): Additional context for personalization
+        
+        Returns:
+            str: The chatbot's response
+        """
+        # Add context to the prompt if available
+        prompt = user_message
+        if context:
+            user_name = context.get('user_name', '')
+            interests = context.get('interests', [])
+            if user_name or interests:
+                context_prefix = f"[Context: User: {user_name}, Interests: {', '.join(interests)}]\n"
+                prompt = context_prefix + prompt
+        
+        # Record inference start time
+        start_time = time.time()
+        
+        # Tokenize input
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
+        
+        # Generate response
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs["input_ids"],
+                max_new_tokens=256,
+                temperature=0.7,
+                top_p=0.9,
+                do_sample=True
+            )
+        
+        # Decode and return response
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # Clean up the response (remove the input prompt)
+        if response.startswith(prompt):
+            response = response[len(prompt):].strip()
+        
+        # Log inference time
+        inference_time = time.time() - start_time
+        logger.info(f"Generated response in {inference_time:.2f} seconds")
+        
+        return response
+    
+    def generate_ad_copy(self, product_name, target_audience, key_benefits):
+        """
+        Generate ad copy for a specific product and target audience
+        
+        Args:
+            product_name (str): Name of the product
+            target_audience (str): Description of the target audience
+            key_benefits (list): List of key benefits of the product
+        
+        Returns:
+            str: Generated ad copy
+        """
+        benefits_text = "\n".join([f"- {benefit}" for benefit in key_benefits])
+        prompt = f"""Generate compelling ad copy for:
+Product: {product_name}
+Target Audience: {target_audience}
+Key Benefits:
+{benefits_text}
+
+Create a short, engaging ad with a strong call-to-action:"""
+        
+        return self.get_response(prompt)
+
+    def generate_ab_test_variants(self, product_name, target_audience, key_message, num_variants=2):
+        """
+        Generate multiple ad variants for A/B testing
+        
+        Args:
+            product_name (str): Name of the product
+            target_audience (str): Description of the target audience
+            key_message (str): Main message to convey
+            num_variants (int): Number of variants to generate
+        
+        Returns:
+            list: List of ad variants
+        """
+        prompt = f"""Generate {num_variants} different ad copy variants for A/B testing:
+Product: {product_name}
+Target Audience: {target_audience}
+Key Message: {key_message}
+
+Create {num_variants} distinct ad variants with different approaches but the same core message:"""
+        
+        response = self.get_response(prompt)
+        
+        # Simple parsing to extract variants (actual implementation might need more robust parsing)
+        variants = []
+        for line in response.split('\n'):
+            if line.strip().startswith(('Variant', 'Option', '#')):
+                variants.append(line)
+        
+        return variants if variants else [response]
+    
+    def get_performance_metrics(self):
+        """Return performance metrics of the model"""
+        return {
+            "model_name": self.model_name,
+            "model_size_mb": self.model_size,
+            "quantized": hasattr(self.model, "is_quantized") and self.model.is_quantized,
+            "device": str(next(self.model.parameters()).device)
+        }
 
 # Example usage
 if __name__ == "__main__":

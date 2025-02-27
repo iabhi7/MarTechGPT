@@ -141,5 +141,6 @@ All endpoints return standard error responses in this format:
 
 ## Rate Limits
 
+# These limits can be increased by contacting support
 - 100 requests per minute per API key
 - 5,000 requests per day per API key 

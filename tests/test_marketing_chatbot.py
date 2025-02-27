@@ -31,6 +31,7 @@ class TestMarketingChatbot:
         assert chatbot is not None
         assert hasattr(chatbot, 'model')
         assert hasattr(chatbot, 'tokenizer')
+        assert chatbot.api_key is None  # No API key provided
     
     def test_generate_ad_copy(self, chatbot):
         """Test ad copy generation"""

@@ -40,6 +40,8 @@ class MarketingCDPIntegration:
             except:
                 self.chatbot = None
                 print("Warning: Could not initialize chatbot. Some AI functions will be disabled.")
+        
+        self.api_endpoint = "https://api.example.com/v1"
     
     def _load_or_create(self, file_path):
         """Load data from file or create empty dataset"""

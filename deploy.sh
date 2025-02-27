@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Netcore AI Marketing Suite Deployment Script
+# AI Marketing Suite Deployment Script
 # This script builds and deploys the application to cloud providers
 
 # Configuration
-IMAGE_NAME="netcore-marketing-suite"
+IMAGE_NAME="ai-marketing-suite"
 VERSION=$(git describe --tags --always --dirty || echo "0.1.0")
 FULL_IMAGE_NAME="${IMAGE_NAME}:${VERSION}"
 
@@ -66,14 +66,14 @@ case "$1" in
     aws-ecs)
         AWS_REGION=${2:-"us-east-1"}
         AWS_ACCOUNT_ID=${3:-$(aws sts get-caller-identity --query Account --output text)}
-        ECS_CLUSTER=${4:-"netcore-cluster"}
-        ECS_SERVICE=${5:-"netcore-service"}
+        ECS_CLUSTER=${4:-"marketing-cluster"}
+        ECS_SERVICE=${5:-"marketing-service"}
         deploy_to_aws "ecs"
         ;;
     aws-lambda)
         AWS_REGION=${2:-"us-east-1"}
         AWS_ACCOUNT_ID=${3:-$(aws sts get-caller-identity --query Account --output text)}
-        LAMBDA_FUNCTION=${4:-"netcore-function"}
+        LAMBDA_FUNCTION=${4:-"marketing-function"}
         deploy_to_aws "lambda"
         ;;
     gcp-cloud-run)

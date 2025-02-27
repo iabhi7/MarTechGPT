@@ -101,13 +101,13 @@ class ABTestAnalyzer:
             'power_word_count': power_word_count
         }
     
-    def recommend_variant(self, analysis_df, primary_metric='readability_score', audience_type='general'):
+    def recommend_variant(self, analysis_df, audience_type="general"):
         """
         Recommend the best variant based on analysis and audience type
+        Uses proprietary scoring algorithm
         
         Args:
             analysis_df: DataFrame from analyze_variants
-            primary_metric: Metric to prioritize in recommendation
             audience_type: Type of audience (general, technical, executive)
             
         Returns:

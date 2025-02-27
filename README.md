@@ -320,7 +320,7 @@ generator = AdCopyGenerator()
 
 # Generate email content
 email_copy = generator.generate_email_copy(
-    product_info={"name": "Netcore Analytics Pro", "features": ["Real-time metrics", "AI insights"]},
+    product_info={"name": "AI Analytics Pro", "features": ["Real-time metrics", "AI insights"]},
     campaign_type="product_launch",
     target_audience="Marketing directors",
     key_message="Transform your analytics with AI"
@@ -475,13 +475,13 @@ Response:
 ```bash
 curl -X POST http://localhost:5000/generate_ad \
   -H "Content-Type: application/json" \
-  -d '{"product_name": "Netcore Smartech", "target_audience": "E-commerce marketers", "key_benefits": ["Increase conversions", "Customer journey analytics", "AI-powered recommendations"]}'
+  -d '{"product_name": "AI Smartech", "target_audience": "E-commerce marketers", "key_benefits": ["Increase conversions", "Customer journey analytics", "AI-powered recommendations"]}'
 ```
 
 Response:
 ```json
 {
-  "ad_copy": "Transform your e-commerce performance with Netcore Smartech. Our AI-powered recommendations drive up to 30% higher conversions while our customer journey analytics reveal untapped opportunities in your sales funnel. Join top retailers who've boosted revenue and retention. Start your free trial today!",
+  "ad_copy": "Transform your e-commerce performance with AI Smartech. Our AI-powered recommendations drive up to 30% higher conversions while our customer journey analytics reveal untapped opportunities in your sales funnel. Join top retailers who've boosted revenue and retention. Start your free trial today!",
   "status": "success"
 }
 ```

@@ -628,8 +628,8 @@ The Netcore AI Marketing Suite can help achieve:
 For technical support or inquiries about integration with Netcore's platform:
 
 - **Email**: me@iabhi.in
-- **Documentation**: https://github.com/yourusername/netcore-marketing-chatbot/wiki
-- **Issues**: https://github.com/yourusername/netcore-marketing-chatbot/issues
+- **Documentation**: https://github.com/iabhi7/netcore-marketing-chatbot/wiki
+- **Issues**: https://github.com/iabhi7/netcore-marketing-chatbot/issues
 
 ## 📄 License
 

@@ -130,6 +130,7 @@ Netcore AI Marketing Suite integrates with Netcore Cloud's marketing platform to
                     └───────────────┘                         └──────────────┘
 
 
+```
 ## 📊 Performance Benchmarks
 
 The Netcore AI Marketing Suite has been optimized for both performance and efficiency. Below are the benchmarks demonstrating the impact of our optimization techniques:
@@ -168,7 +169,6 @@ The Netcore AI Marketing Suite has been optimized for both performance and effic
 These optimizations ensure Netcore's platform can scale efficiently while keeping operational costs low. 
 
 
-```
 
 ## 🚀 Quick Start
 

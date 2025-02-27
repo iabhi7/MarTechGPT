@@ -73,35 +73,17 @@ for i, result in enumerate(subject_lines, 1):
 
 #### 2. Marketing Chatbot
 
-AI-powered chatbot that provides marketing insights and recommendations. The chatbot is optimized with 8-bit quantization for production use, reducing memory usage by 60% while maintaining response quality.
+AI-powered chatbot that provides marketing insights and recommendations.
 
 ```python
 from quick_wins.marketing_chatbot.chatbot import MarketingChatbot
 
-# Initialize the chatbot (with quantization for efficiency)
-chatbot = MarketingChatbot(quantize=True)
+# Initialize the chatbot
+chatbot = MarketingChatbot()
 
 # Ask a marketing question
 response = chatbot.chat("How can I improve my email open rates?")
 print(response["response"])
-
-# Generate ad copy
-ad_copy = chatbot.generate_ad_copy(
-    product_name="Email Analytics Platform",
-    target_audience="Marketing Directors",
-    key_benefits=["Real-time insights", "AI recommendations", "30% higher open rates"]
-)
-print(ad_copy)
-
-# Generate A/B test variants
-variants = chatbot.generate_ab_test_variants(
-    product_name="Marketing Automation Tool",
-    target_audience="E-commerce marketers",
-    key_message="Save time and increase conversions",
-    num_variants=2
-)
-for variant in variants:
-    print(variant)
 ```
 
 #### 3. Customer Segmentation
@@ -213,7 +195,7 @@ netcore.upload_content_suggestions(
 
 ## 📊 Model Optimization and Performance
 
-Our models, particularly the Marketing Chatbot, have been optimized for production use with the following performance characteristics:
+The chatbot has been optimized for production use with the following performance characteristics:
 
 | Metric | Value | Comparison to Baseline |
 |--------|-------|------------------------|
@@ -225,23 +207,31 @@ Our models, particularly the Marketing Chatbot, have been optimized for producti
 
 ### Model Optimization Techniques
 
-The suite leverages several techniques to reduce model size and improve inference speed:
+The chatbot uses advanced quantization techniques to reduce model size and improve inference speed:
 
 - **8-bit Quantization**: Reduces model size by >50% with minimal quality loss
 - **Half-precision Computation**: Uses FP16 for faster inference on compatible hardware
 - **Optimized Pipeline**: Streamlined text generation with attention caching
-- **Efficient Embedding**: Using optimized models for vector embeddings
 
 ## 🧠 AI/ML Technologies Used
 
 - **LLMs**: Mistral-7B, LLaMA-2, FLAN-T5
 - **Frameworks**: PyTorch, LangChain, Hugging Face Transformers
 - **ML**: Scikit-learn, FAISS for vector search
-- **Deployment**: FastAPI and Flask for serving models
+- **Deployment**: FastAPI for serving models
+
+## 📚 Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `MODEL_NAME` | HuggingFace model identifier | mistralai/Mistral-7B-Instruct-v0.1 |
+| `QUANTIZE` | Enable model quantization | True |
+| `PORT` | API server port | 5000 |
+| `LOG_LEVEL` | Logging verbosity | INFO |
 
 ## 🌐 API Reference
 
-The suite exposes several RESTful endpoints for integration, with the Marketing Chatbot providing these key endpoints:
+The chatbot exposes several RESTful endpoints for integration:
 
 ### Chat Endpoint
 
@@ -297,7 +287,7 @@ Response:
 
 ## 🔄 Integration with Netcore Platform
 
-This suite enhances Netcore's capabilities through multiple integration points:
+This chatbot enhances Netcore's capabilities through multiple integration points:
 
 ### Integration Diagram
 
@@ -372,16 +362,6 @@ tests/test_chatbot.py ......                                             [100%]
 
 ============================== 6 passed in 6.32s ===============================
 ```
-
-## 📚 Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `MODEL_NAME` | HuggingFace model identifier | mistralai/Mistral-7B-Instruct-v0.1 |
-| `QUANTIZE` | Enable model quantization | True |
-| `PORT` | API server port | 5000 |
-| `LOG_LEVEL` | Logging verbosity | INFO |
-| `NETCORE_API_KEY` | API key for Netcore integration | None |
 
 ## 🗓️ Roadmap
 
